@@ -19,6 +19,26 @@ init_repo() {
   echo "Repozytorium sklonowane i PATH ustawiony."
 }
 
+create_logs() {
+  local count=$1
+  for ((i=1; i<=count; i++)); do
+    filename="log${i}.txt"
+    echo -e "Nazwa pliku: $filename\nUtworzony przez: $0\nData: $(date)" > "$filename"
+  done
+  echo "Utworzono $count plików log."
+}
+
+create_errors() {
+  local count=$1
+  for ((i=1; i<=count; i++)); do
+    dir="error${i}"
+    mkdir -p "$dir"
+    filename="${dir}/error${i}.txt"
+    echo -e "Nazwa pliku: $filename\nUtworzony przez: $0\nData: $(date)" > "$filename"
+  done
+  echo "Utworzono $count plików error."
+}
+
 case "$1" in
   --date|-d)
     date
@@ -27,10 +47,13 @@ case "$1" in
     if [[ "$2" =~ ^[0-9]+$ ]]; then
       LOG_COUNT=$2
     fi
-    for ((i=1; i<=LOG_COUNT; i++)); do
-      filename="log${i}.txt"
-      echo -e "Nazwa pliku: $filename\nUtworzony przez: $0\nData: $(date)" > "$filename"
-    done
+    create_logs "$LOG_COUNT"
+    ;;
+  --error|-e)
+    if [[ "$2" =~ ^[0-9]+$ ]]; then
+      LOG_COUNT=$2
+    fi
+    create_errors "$LOG_COUNT"
     ;;
   --help|-h)
     show_help
